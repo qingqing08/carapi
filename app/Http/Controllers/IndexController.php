@@ -95,8 +95,12 @@ class IndexController extends Controller
         }
     }
 
+    //首页案例列表
     public function case_list(){
-        $list = DB::table('case')->get();
+        $list = DB::table('case')->get(['id' , 'title' , 'image']);
+
+        $data = $this->image_url($list , '2' , 'image');
+        return $this->returnAjax($data , '获取成功' , 200);
     }
 
 }

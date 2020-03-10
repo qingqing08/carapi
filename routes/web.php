@@ -32,3 +32,5 @@ Route::get('trainingList' , 'IndexController@training_list');
 Route::get('trainingInfo' , 'IndexController@training_info');
 //案例分类
 Route::get('caseCategory' , 'CasesController@case_category');
+//案例列表
+Route::get('caseList' , 'IndexController@case_list');
