@@ -95,4 +95,8 @@ class IndexController extends Controller
         }
     }
 
+    public function case_list(){
+        $list = DB::table('case')->get();
+    }
+
 }
