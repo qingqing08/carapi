@@ -20,6 +20,9 @@ Route::middleware('cors')->group(function () {
 });
 
 
+//首页接口--轮播图、产品分类、智慧实训室、案例
+Route::get('index' , 'IndexController@index');
+
 //轮播图列表
 Route::get('banner' , 'IndexController@banner');
 //产品分类列表

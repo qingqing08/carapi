@@ -8,6 +8,26 @@ use Illuminate\Support\Facades\Input;
 
 class IndexController extends Controller
 {
+    //首页接口包含(轮播图--产品分类--实训室--院校案例)
+    public function index(){
+        //轮播图列表
+        $banner_list = DB::table('banner')->get(['id' , 'image']);
+        $data['banner_list'] = $this->image_url($banner_list , 2 , 'image');
+
+        //产品分类
+        $product_category_list = DB::table('product_category')->get(['id' , 'name']);
+        $data['product_category'] = $product_category_list;
+
+        //实训室列表
+        $laboratory_list = DB::table('laboratory')->where('is_wisdom' , 1)->get(['id' , 'laboratory_name' , 'image' , 'introduction']);
+        $data['laboratory_list'] = $this->image_url($laboratory_list , 2 , 'image');
+
+        //院校案例列表
+        $case_list = DB::table('case')->get(['id' , 'title' , 'image']);
+        $data['case_list'] = $this->image_url($case_list , '2' , 'image');
+
+        return $this->returnAjax($data , '获取成功' , 200);
+    }
     //轮播图
     public function banner(){
         $list = DB::table('banner')->get();
