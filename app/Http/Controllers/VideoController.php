@@ -19,9 +19,17 @@ class VideoController extends Controller
     //视频列表
     public function video_list(){
         $category_id = Input::get('category_id');
-        $list = DB::table('videos')->where('vc_id' , $category_id)->get(['id' , 'video_name']);
+        if (empty($category_id)){
+            $wx_list = DB::table('videos')->where('type' , 1)->get(['id' , 'video_name' , 'image' , 'watch_number']);
+            $cp_list = DB::table('videos')->where('type' , 2)->get(['id' , 'video_name' , 'image' , 'watch_number']);
+        } else {
+            $wx_list = DB::table('videos')->where(array('vc_id'=>$category_id , 'type'=>1))->get(['id' , 'video_name' , 'image' , 'watch_number']);
+            $cp_list = DB::table('videos')->where(array('vc_id'=>$category_id , 'type'=>2))->get(['id' , 'video_name' , 'image' , 'watch_number']);
+        }
 
-        $data = $this->image_url($list , '2' , 'video');
+        $list['wx_list'] = $wx_list;
+        $list['cp_list'] = $cp_list;
+        $data = $this->image_url($list , '2' , 'image');
         return $this->returnAjax($data , '获取成功' , 200);
     }
 }
