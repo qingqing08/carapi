@@ -11,7 +11,7 @@ class IndexController extends Controller
     //首页接口包含(轮播图--产品分类--实训室--院校案例)
     public function index(){
         //轮播图列表
-        $banner_list = DB::table('banner')->get(['id' , 'data_id' , 'type' , 'image']);
+        $banner_list = DB::table('banner')->get(['data_id' , 'type' , 'image']);
         $data['banner_list'] = $this->image_url($banner_list , 2 , 'image');
 
         //产品分类
