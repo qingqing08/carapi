@@ -36,7 +36,7 @@ Route::get('trainingInfo' , 'IndexController@training_info');
 //案例分类
 Route::get('caseCategory' , 'CasesController@case_category');
 //案例列表
-Route::get('caseList' , 'IndexController@case_list');
+Route::get('caseList' , 'CasesController@case_list');
 //视频分类
 Route::get('videoCategory' , 'VideoController@video_category');
 //视频列表
