@@ -28,6 +28,18 @@ class IndexController extends Controller
 
         return $this->returnAjax($data , '获取成功' , 200);
     }
+
+    //首页搜索----根据产品名搜索
+    public function product_search(){
+        $condition = Input::get('condition');
+
+        $list = DB::table('product')->where('product_name' , 'like' , '%'.$condition.'%')->get(['id' , 'product_name' , 'image']);
+        $list = $this->image_url($list , '2' , 'image');
+
+        return $this->returnAjax($list , '获取成功' , 200);
+    }
+
+
     //轮播图
     public function banner(){
         $list = DB::table('banner')->get();
