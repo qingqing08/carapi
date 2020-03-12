@@ -28,16 +28,17 @@ class VideoController extends Controller
             $cp_list = DB::table('videos')->where(array('vc_id'=>$category_id , 'type'=>2))->get(['id' , 'video_name' , 'image' , 'watch_number']);
         }
 
+        //主推视频列表
+        $main_video = DB::table('video_main')->get(['data_id' , 'image']);
+        $main_video = $this->image_url($main_video , '2' , 'image');
+        $list['main_video'] = $main_video;
+
         //维修视频列表
         $wx_list = $this->image_url($wx_list , '2' , 'image');
         //产品讲解列表
         $cp_list = $this->image_url($cp_list , '2' , 'image');
         $list['wx_list'] = $wx_list;
         $list['cp_list'] = $cp_list;
-        //主推视频列表
-        $main_video = DB::table('video_main')->get(['data_id' , 'image']);
-        $main_video = $this->image_url($main_video , '2' , 'image');
-        $list['main_video'] = $main_video;
         return $this->returnAjax($list , '获取成功' , 200);
     }
 }
