@@ -28,4 +28,19 @@ class CasesController extends Controller
         $list = $this->image_url($list , '2' , 'image');
         return $this->returnAjax($list , '获取成功' , 200);
     }
+
+    //案例详情
+    public function case_info(){
+        $case_id = Input::get('case_id');
+        if (empty($case_id)){
+            return $this->returnAjax('' , '参数错误' , 100);
+        }
+
+        $info = DB::table('case')->where('id' , $case_id)->first(['id' , 'title' , 'content']);
+        if (empty($info)){
+            return $this->returnAjax('' , '查无此数据' , 100);
+        } else {
+            return $this->returnAjax($info , '获取成功' , 200);
+        }
+    }
 }

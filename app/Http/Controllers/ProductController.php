@@ -60,7 +60,8 @@ class ProductController extends Controller
             $info->images = implode(',' , $arr);
         }
 
-        $info->relevant_video = [];
+        $video_list = DB::table('product')->whereNotIn('id' , $product_id)->get(['id' , 'image']);
+        $info->relevant_video = $video_list;
 
         return $this->returnAjax($info , '获取成功' , 200);
     }
