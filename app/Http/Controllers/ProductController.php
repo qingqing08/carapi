@@ -53,7 +53,7 @@ class ProductController extends Controller
         }
         if (!empty($info->images)){
             $arr = explode(',' , $info->images);
-            for ($i=0;$i<=count($arr);$i++){
+            for ($i=0;$i<=count($arr)-1;$i++){
                 $arr[$i] = $this->image_url($arr[$i] , 1);
             }
 
