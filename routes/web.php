@@ -29,9 +29,11 @@ Route::get('productSearch' , 'IndexController@product_search');
 //Route::get('banner' , 'IndexController@banner');
 
 //产品分类列表
-Route::get('productCategory' , "ProductController@product_category");
+Route::get('productCategory' , 'ProductController@product_category');
 //产品列表
-Route::get('productList' , "ProductController@product_list");
+Route::get('productList' , 'ProductController@product_list');
+//产品详情
+Route::get('productInfo' , 'ProductController@product_info');
 
 //智慧实训室和更多实训室
 Route::get('trainingList' , 'IndexController@training_list');

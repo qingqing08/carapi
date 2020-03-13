@@ -40,6 +40,31 @@ class ProductController extends Controller
         return $this->returnAjax($list , '获取成功' , 200);
     }
 
+    //产品详情
+    public function product_info(){
+        $product_id = Input::get('product_id');
+        if (empty($product_id)){
+            return $this->returnAjax('' , '参数错误' , 100);
+        }
+
+        $info = DB::table('product')->where('id' , $product_id)->first(['id' , 'product_name' , 'video' , 'images' , 'file' , 'content' , 'share_number' , 'fabulous_number']);
+        if (!empty($info->video)){
+            $info->video = $this->image_url($info->video , 1);
+        }
+        if (!empty($info->images)){
+            $arr = explode(',' , $info->images);
+            for ($i=0;$i<=count($arr);$i++){
+                $arr[$i] = $this->image_url($arr[$i] , 1);
+            }
+
+            $info->images = implode(',' , $arr);
+        }
+
+        $info->relevant_video = [];
+
+        return $this->returnAjax($info , '获取成功' , 200);
+    }
+
     //实训室详情
     public function training_info(){
         $laboratory_id = Input::get('laboratory_id');
@@ -49,18 +74,17 @@ class ProductController extends Controller
         }
         DB::table('laboratory')->increment('watch_number');
 
-        $url = 'http://cmf.qc110.cn';
         $info = DB::table('laboratory')->where('id' , $laboratory_id)->first(['id' , 'laboratory_name' , 'video' , 'file' , 'content' , 'share_number' , 'fabulous_number']);
         if (!empty($info->image)){
-            $info->image = $url.$info->image;
+            $info->image = $this->image_url($info->image , 1);
         }
         if (!empty($info->video)){
-            $info->video = $url.$info->video;
+            $info->video = $this->image_url($info->video , 1);
         }
         if (!empty($info->file)){
-            $info->file = $url.$info->file;
+            $info->file = $this->image_url($info->file , 1);
         }
-        
+
         $list = DB::table('laboratory_video')->where('la_id' , $laboratory_id)->get(['id' , 'name']);
 
         $info->video_list = $list;
