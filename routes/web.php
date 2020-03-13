@@ -25,16 +25,19 @@ Route::get('index' , 'IndexController@index');
 //产品搜索
 Route::get('productSearch' , 'IndexController@product_search');
 
-//轮播图列表
-Route::get('banner' , 'IndexController@banner');
+////轮播图列表
+//Route::get('banner' , 'IndexController@banner');
+
 //产品分类列表
-Route::get('productCategory' , "IndexController@product_category");
+Route::get('productCategory' , "ProductController@product_category");
 //产品列表
-Route::get('productList' , "IndexController@product");
+Route::get('productList' , "ProductController@product_list");
+
 //智慧实训室和更多实训室
 Route::get('trainingList' , 'IndexController@training_list');
 //实训室详情
-Route::get('trainingInfo' , 'IndexController@training_info');
+Route::get('trainingInfo' , 'ProductController@training_info');
+
 //案例分类
 Route::get('caseCategory' , 'CasesController@case_category');
 //案例列表

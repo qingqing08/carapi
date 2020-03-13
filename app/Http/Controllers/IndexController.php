@@ -48,36 +48,6 @@ class IndexController extends Controller
         return $this->returnAjax($data , '获取成功' , 200);
     }
 
-    //产品分类
-    public function product_category(){
-        $list = DB::table('product_category')->get();
-
-        return $this->returnAjax($list , '获取成功' , 200);
-    }
-
-    //产品列表
-    public function product(){
-        $category_id = Input::get('category_id');
-
-        if (empty($category_id)){
-            $list = DB::table('product')->get();
-        } else {
-            $list = DB::table('product')->where('category_id' , $category_id)->get();
-        }
-        foreach ($list as $key=>$val){
-            $val->image = 'http://cmf.qc110.cn' . $val->image;
-            $arr = explode(",", $val->images);
-            for ($i=0;$i<=count($arr)-1;$i++){
-                $newarr[] = 'http://cmf.qc110.cn' . $arr[$i];
-            }
-            $val->images = implode(',' ,$newarr);
-            $val->video = 'http://cmf.qc110.cn' . $val->video;
-            $val->file = 'http://cmf.qc110.cn' . $val->file;
-        }
-
-        return $this->returnAjax($list , '获取成功' , 200);
-    }
-
     //智慧实训室和更多实训室
     //参数传值为智慧实训室--不传值为更多实训室
     public function training_list(){
