@@ -50,10 +50,17 @@ class ProductController extends Controller
         DB::table('laboratory')->increment('watch_number');
 
         $url = 'http://cmf.qc110.cn';
-        $info = DB::table('laboratory')->where('id' , $laboratory_id)->first();
-        $info->image = $url.$info->image;
-        $info->video = $url.$info->video;
-        $info->file = $url.$info->file;
+        $info = DB::table('laboratory')->where('id' , $laboratory_id)->first(['id' , 'laboratory_name' , 'video' , 'file' , 'content' , 'share_number' , 'fabulous_number']);
+        if (!empty($info->image)){
+            $info->image = $url.$info->image;
+        }
+        if (!empty($info->video)){
+            $info->video = $url.$info->video;
+        }
+        if (!empty($info->file)){
+            $info->file = $url.$info->file;
+        }
+        
         $list = DB::table('laboratory_video')->where('la_id' , $laboratory_id)->get(['id' , 'name']);
 
         $info->video_list = $list;
