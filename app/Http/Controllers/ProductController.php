@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 
-class ProductComtroller extends Controller
+class ProductController extends Controller
 {
 
     //产品分类
