@@ -68,7 +68,7 @@ class ProductController extends Controller
 
     //实训室分类
     public function training_category(){
-        $list = DB::table('laboratory_category')->get();
+        $list = DB::table('laboratory_category')->get(['id' , 'category_name']);
 
         return $this->returnAjax($list , '获取成功' , 200);
     }
