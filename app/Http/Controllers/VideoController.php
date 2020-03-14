@@ -71,14 +71,15 @@ class VideoController extends Controller
             DB::table('videos')->increment('watch_number');
             $info->video = $this->image_url($info->video , 1);
 
-            $list = DB::table('videos')->whereNotIn('id' , $video_id)->get(['id' , 'video_name' , 'image']);
-            print_r($list);die;
-            if (!empty($list)){
-                $list = $this->image_url($list , 3 , 'image');
-                $info->relevant_video = $list;
-            } else {
-                $info->relevant_video = [];
-            }
+//            $list = DB::table('videos')->whereNotIn('id' , $video_id)->get(['id' , 'video_name' , 'image']);
+//            print_r($list);die;
+//            if (!empty($list)){
+//                $list = $this->image_url($list , 3 , 'image');
+//                $info->relevant_video = $list;
+//            } else {
+//                $info->relevant_video = [];
+//            }
+            $info->relevant_video = [];
         }
 
         return $this->returnAjax($info , '获取成功' , 200);
