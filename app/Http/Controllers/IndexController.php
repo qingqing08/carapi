@@ -71,7 +71,13 @@ class IndexController extends Controller
 
         $arr['c_time'] = time();
 
-        return $this->returnAjax($arr , '反馈成功' , 200);
+        $result = DB::table('feedback')->insert($arr);
+        if ($result){
+            return $this->returnAjax('' , '反馈成功' , 200);
+        } else {
+            return $this->returnAjax('' , '操作失败' , 100);
+        }
+
     }
 
 
