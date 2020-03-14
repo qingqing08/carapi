@@ -9,6 +9,20 @@ use Illuminate\Support\Facades\Input;
 
 class VideoController extends Controller
 {
+
+    //视频搜索
+    public function video_search(){
+        $condition = Input::get('condition');
+        if (empty($condition)){
+            return $this->returnAjax('' , '搜索条件为空' , 100);
+        }
+
+        $list = DB::table('videos')->where('video_name' , 'like' , '%'.$condition.'%')->get(['id' , 'video_name' , 'image' , 'watch_number']);
+
+        $list = $this->image_url($list , 2 , 'image');
+        return $this->returnAjax($list , '获取成功' , 200);
+    }
+
     //视频分类列表
     public function video_category(){
         $list = DB::table('video_category')->get(['id' , 'name']);
@@ -40,5 +54,27 @@ class VideoController extends Controller
         $list['wx_list'] = $wx_list;
         $list['cp_list'] = $cp_list;
         return $this->returnAjax($list , '获取成功' , 200);
+    }
+
+    //视频库详情
+    public function video_info(){
+        $video_id = Input::get('video_id');
+        if (empty($video_id)){
+            return $this->returnAjax('' , '参数错误' , 100);
+        }
+
+        $info = DB::table('videos')->where('id' , $video_id)->first(['id' , 'video_name' , 'video' , 'introduction' , 'watch_number' , 'share_number' , 'fabulous_number']);
+        if (empty($info)){
+            return $this->returnAjax('' , '查无此数据' , 100);
+        } else {
+            DB::table('videos')->increment('watch_number');
+            $info->video = $this->image_url($info->video , 1);
+
+            $list = DB::table('videos')->whereNotIn('id' , $video_id)->get(['id' , 'video_name' , 'image']);
+            $list = $this->image_url($list , 2 , 'image');
+            $info->relevant_video = $list;
+        }
+
+        return $this->returnAjax($info , '获取成功' , 200);
     }
 }
