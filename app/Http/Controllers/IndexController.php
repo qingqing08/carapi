@@ -65,7 +65,7 @@ class IndexController extends Controller
         }
 
         $preg_phone='/^1[34578]\d{9}$/ims';
-        if(!preg_match($preg_phone ,$arr['phone'])){
+        if(!preg_match($preg_phone ,$arr['tel'])){
             return $this->returnAjax('' , '手机号格式不正确' , 100);
         }
 
