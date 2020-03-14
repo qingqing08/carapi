@@ -74,3 +74,8 @@ Route::get('videoCategory' , 'VideoController@video_category');
 Route::get('videoList' , 'VideoController@video_list');
 //视频详情
 Route::get('videoInfo' , 'VideoController@video_info');
+
+//摄像头开始操作
+Route::get('start' , 'CameraController@start');
+//摄像头停止操作
+Route::get('stop' , 'CameraController@stop');
