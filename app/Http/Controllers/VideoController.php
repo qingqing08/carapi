@@ -64,7 +64,7 @@ class VideoController extends Controller
         }
 
         $info = DB::table('videos')->where('id' , $video_id)->first(['id' , 'video_name' , 'video' , 'introduction' , 'watch_number' , 'share_number' , 'fabulous_number']);
-        print_r($info);die;
+
         if (empty($info)){
             return $this->returnAjax('' , '查无此数据' , 100);
         } else {
@@ -72,8 +72,12 @@ class VideoController extends Controller
             $info->video = $this->image_url($info->video , 1);
 
             $list = DB::table('videos')->whereNotIn('id' , $video_id)->get(['id' , 'video_name' , 'image']);
-            $list = $this->image_url($list , 3 , 'image');
-            $info->relevant_video = $list;
+            if (!empty($list)){
+                $list = $this->image_url($list , 3 , 'image');
+                $info->relevant_video = $list;
+            } else {
+                $info->relevant_video = [];
+            }
         }
 
         return $this->returnAjax($info , '获取成功' , 200);
