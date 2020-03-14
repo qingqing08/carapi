@@ -66,6 +66,26 @@ class ProductController extends Controller
         return $this->returnAjax($info , '获取成功' , 200);
     }
 
+    //实训室分类
+    public function training_category(){
+        $list = DB::table('laboratory_category')->get();
+
+        return $this->returnAjax($list , '获取成功' , 200);
+    }
+
+    //实训室列表
+    public function training_list(){
+        $category_id = Input::get('category_id');
+        if (empty($category_id)){
+            $list = DB::table('laboratory')->get(['id' , 'laboratory_name' , 'image' , 'introduction']);
+        } else {
+            $list = DB::table('laboratory')->where('category_id' , $category_id)->get(['id' , 'laboratory_name' , 'image' , 'introduction']);
+        }
+
+        $data = $this->image_url($list , 2 , 'image');
+        return $this->returnAjax($data , '获取成功' , 200);
+    }
+
     //实训室详情
     public function training_info(){
         $laboratory_id = Input::get('laboratory_id');

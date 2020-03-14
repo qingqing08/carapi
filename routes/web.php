@@ -24,6 +24,8 @@ Route::middleware('cors')->group(function () {
 Route::get('index' , 'IndexController@index');
 //产品搜索
 Route::get('productSearch' , 'IndexController@product_search');
+//实训室搜索
+Route::get('trainingSearch' , 'IndexController@training_search');
 
 ////轮播图列表
 //Route::get('banner' , 'IndexController@banner');
@@ -35,8 +37,10 @@ Route::get('productList' , 'ProductController@product_list');
 //产品详情
 Route::get('productInfo' , 'ProductController@product_info');
 
-//智慧实训室和更多实训室
-Route::get('trainingList' , 'IndexController@training_list');
+//实训室分类
+Route::get('trainingCategory' , 'ProductController@training_category');
+//实训室列表
+Route::get('trainingList' , 'ProductController@training_list');
 //实训室详情
 Route::get('trainingInfo' , 'ProductController@training_info');
 
