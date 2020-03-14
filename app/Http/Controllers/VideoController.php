@@ -64,6 +64,7 @@ class VideoController extends Controller
         }
 
         $info = DB::table('videos')->where('id' , $video_id)->first(['id' , 'video_name' , 'video' , 'introduction' , 'watch_number' , 'share_number' , 'fabulous_number']);
+        print_r($info);die;
         if (empty($info)){
             return $this->returnAjax('' , '查无此数据' , 100);
         } else {
