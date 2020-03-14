@@ -61,7 +61,12 @@ class IndexController extends Controller
 
         $preg_email='/^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@([a-zA-Z0-9]+[-.])+([a-z]{2,5})$/ims';
         if(!preg_match($preg_email , $arr['email'])){
-            return $this->returnAjax('' , '邮箱地址不正确' , 100);
+            return $this->returnAjax('' , '邮箱地址格式不正确' , 100);
+        }
+
+        $preg_phone='/^1[34578]\d{9}$/ims';
+        if(!preg_match($preg_phone ,$arr['phone'])){
+            return $this->returnAjax('' , '手机号格式不正确' , 100);
         }
 
         $arr['c_time'] = time();
