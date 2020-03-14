@@ -80,6 +80,13 @@ class IndexController extends Controller
 
     }
 
+    //公司介绍
+    public function company_information(){
+        $info = DB::table('company')->where('id' , 1)->first(['contact_information' , 'content']);
+
+        return $this->returnAjax($info , '获取成功' , 200);
+    }
+
 
     //轮播图
     public function banner(){
