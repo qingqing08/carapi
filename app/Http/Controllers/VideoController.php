@@ -19,7 +19,7 @@ class VideoController extends Controller
 
         $list = DB::table('videos')->where('video_name' , 'like' , '%'.$condition.'%')->get(['id' , 'video_name' , 'image' , 'watch_number']);
 
-        $list = $this->image_url($list , 2 , 'image');
+        $list = $this->image_url($list , 3 , 'image');
         return $this->returnAjax($list , '获取成功' , 200);
     }
 
@@ -44,13 +44,13 @@ class VideoController extends Controller
 
         //主推视频列表
         $main_video = DB::table('video_main')->get(['data_id' , 'image']);
-        $main_video = $this->image_url($main_video , '2' , 'image');
+        $main_video = $this->image_url($main_video , '3' , 'image');
         $list['main_video'] = $main_video;
 
         //维修视频列表
-        $wx_list = $this->image_url($wx_list , '2' , 'image');
+        $wx_list = $this->image_url($wx_list , '3' , 'image');
         //产品讲解列表
-        $cp_list = $this->image_url($cp_list , '2' , 'image');
+        $cp_list = $this->image_url($cp_list , '3' , 'image');
         $list['wx_list'] = $wx_list;
         $list['cp_list'] = $cp_list;
         return $this->returnAjax($list , '获取成功' , 200);
@@ -71,7 +71,7 @@ class VideoController extends Controller
             $info->video = $this->image_url($info->video , 1);
 
             $list = DB::table('videos')->whereNotIn('id' , $video_id)->get(['id' , 'video_name' , 'image']);
-            $list = $this->image_url($list , 2 , 'image');
+            $list = $this->image_url($list , 3 , 'image');
             $info->relevant_video = $list;
         }
 

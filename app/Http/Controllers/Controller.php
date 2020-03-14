@@ -44,7 +44,7 @@ class Controller extends BaseController
             if ($type == 3){
                 foreach ($data as $key=>$val){
                     if ($val->$param != '') {
-                        $val->$param = 'http://cmf.qc110.cn' . $val->$param;
+                        $val->$param = $url . $val->$param;
                     }
                 }
             }
