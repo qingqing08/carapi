@@ -27,6 +27,8 @@ Route::get('productSearch' , 'IndexController@product_search');
 //实训室搜索
 Route::get('trainingSearch' , 'IndexController@training_search');
 
+//反馈接口
+Route::post('feedback' , 'IndexController@feedback');
 ////轮播图列表
 //Route::get('banner' , 'IndexController@banner');
 

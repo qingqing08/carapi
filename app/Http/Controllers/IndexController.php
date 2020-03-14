@@ -53,6 +53,22 @@ class IndexController extends Controller
         return $this->returnAjax($list , '获取成功' , 200);
     }
 
+    //信息反馈
+    public function feedback(){
+        $data = file_get_contents('php://input');
+
+        $arr = json_decode($data);
+        $arr['email'] = '1515212@qq';
+        $preg_email='/^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@([a-zA-Z0-9]+[-.])+([a-z]{2,5})$/ims';
+        if(!preg_match($preg_email , $arr['email'])){
+            return $this->returnAjax('' , '邮箱地址不正确' , 100);
+        }
+
+        $arr['c_time'] = time();
+
+        return $this->returnAjax($arr , '反馈成功' , 200);
+    }
+
 
     //轮播图
     public function banner(){
