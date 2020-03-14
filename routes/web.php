@@ -31,6 +31,8 @@ Route::get('trainingSearch' , 'IndexController@training_search');
 Route::post('feedback' , 'IndexController@feedback');
 //公司信息
 Route::get('companyInformation' , 'IndexController@company_information');
+//联系我们
+Route::get('contactUs' , 'IndexController@contact_us');
 ////轮播图列表
 //Route::get('banner' , 'IndexController@banner');
 

@@ -82,7 +82,14 @@ class IndexController extends Controller
 
     //公司介绍
     public function company_information(){
-        $info = DB::table('company')->where('id' , 1)->first(['contact_information' , 'content']);
+        $info = DB::table('company')->where('id' , 1)->first(['content']);
+
+        return $this->returnAjax($info , '获取成功' , 200);
+    }
+
+    //联系我们
+    public function contact_us(){
+        $info = DB::table('company')->where('id' , 2)->first(['content']);
 
         return $this->returnAjax($info , '获取成功' , 200);
     }
