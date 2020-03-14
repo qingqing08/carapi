@@ -72,6 +72,7 @@ class VideoController extends Controller
             $info->video = $this->image_url($info->video , 1);
 
             $list = DB::table('videos')->whereNotIn('id' , $video_id)->get(['id' , 'video_name' , 'image']);
+            print_r($list);die;
             if (!empty($list)){
                 $list = $this->image_url($list , 3 , 'image');
                 $info->relevant_video = $list;
