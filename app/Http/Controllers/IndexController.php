@@ -57,8 +57,9 @@ class IndexController extends Controller
     public function feedback(){
         $data = file_get_contents('php://input');
 
-        return $this->returnAjax($data , '123' , 200);
         $arr = json_decode($data);
+        print_r($arr);
+        return $this->returnAjax($arr , '123' , 200);
         $arr['email'] = '1515212@qq';
         $preg_email='/^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@([a-zA-Z0-9]+[-.])+([a-z]{2,5})$/ims';
         if(!preg_match($preg_email , $arr['email'])){
