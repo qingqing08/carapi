@@ -6,7 +6,7 @@
  * @package  Laravel
  * @author   Taylor Otwell <taylor@laravel.com>
  */
-header('Content-Type: text/html; charset=utf-8');
+header('Access-Control-Allow-Headers:Origin, Content-Type, Cookie, Accept');
 define('LARAVEL_START', microtime(true));
 
 /*
