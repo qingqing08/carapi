@@ -6,6 +6,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\DB;
 
 class Controller extends BaseController
 {
@@ -30,7 +31,7 @@ class Controller extends BaseController
      * param 需要重新复制的字段名
      */
     public function image_url($data , $type=1 , $param = ''){
-        $url = "http://cmf.qc110.cn";
+        $url = "http://cmf.jiaojumoxing.com";
         if ($data != ''){
             if ($type == 1){
                 $data = $url.$data;
@@ -51,6 +52,50 @@ class Controller extends BaseController
         }
 
         return $data;
+    }
+
+    public function tel(){
+        $tel = DB::table('tel')->where('id' , 1)->value('tel');
+        return $tel;
+    }
+
+    public function wx_login($code){
+//        echo $code;
+        $appid = "wxba5f6fdd47c6d644";
+        $AppSecret = "6b10639a82cefcb8c1d83a6e9e5380a0";
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid."&secret=".$AppSecret."&code=".$code."&grant_type=authorization_code";
+
+        $access_token = $this->curlRequest($url);
+//        echo $access_token;
+        $arr = json_decode($access_token , true);
+
+
+//        print_r($arr);die;
+        $token = $arr['access_token'];
+
+        $user_url = "https://api.weixin.qq.com/sns/userinfo?access_token=".$token."&openid=OPENID&lang=zh_CN";
+
+        $json_user_info = $this->curlRequest($user_url);
+        $data = json_decode($json_user_info , true);
+        $user_data = [
+            'openid' => $data['openid'],
+            'nickname'  =>  urlencode($data['nickname']),
+            'sex'   =>  $data['sex'],
+            'address'  =>  $data['province'].$data['city'],
+            'headimgurl'    =>  $data['headimgurl'],
+            'c_time'    =>  time(),
+        ];
+
+        $user_info = DB::table('wx_user')->where('openid' , $data['openid'])->first();
+        if (empty($user_info)) {
+            $result = DB::table('wx_user')->insert($user_data);
+            if ($result) {
+                $user_info = DB::table('wx_user')->where('openid', $data['openid'])->first();
+            }
+        }
+
+        $user_info->nickname = urldecode($user_info->nickname);
+        return $user_info;
     }
 
 

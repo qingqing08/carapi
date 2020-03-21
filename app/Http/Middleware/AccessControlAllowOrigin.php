@@ -28,6 +28,8 @@ class AccessControlAllowOrigin
             'http://192.168.199.205:8080',
             'http://localhost:8080',
             'http://cmf.qc110.cn',
+            'http://cmf.jiaojumoxing.com',
+            'https://open.weixin.qq.com/',
         ];
 
         if (in_array($origin, $allow_origin)) {

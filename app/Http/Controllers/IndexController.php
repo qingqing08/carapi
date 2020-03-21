@@ -15,15 +15,15 @@ class IndexController extends Controller
         $data['banner_list'] = $this->image_url($banner_list , 2 , 'image');
 
         //产品分类
-        $product_category_list = DB::table('product_category')->orderBy('c_time' , 'desc')->get(['id' , 'name']);
-        $data['product_category'] = $product_category_list;
+        $laboratory_category_list = DB::table('laboratory_category')->orderBy('c_time' , 'desc')->get(['id' , 'category_name' , 'name' , 'english_name']);
+        $data['laboratory_category'] = $laboratory_category_list;
 
         //实训室列表
         $laboratory_list = DB::table('laboratory')->where('is_wisdom' , 1)->orderBy('c_time' , 'desc')->get(['id' , 'laboratory_name' , 'image' , 'introduction']);
         $data['laboratory_list'] = $this->image_url($laboratory_list , 2 , 'image');
 
         //院校案例列表
-        $case_list = DB::table('case')->orderBy('c_time' , 'desc')->get(['id' , 'title' , 'image']);
+        $case_list = DB::table('case')->where('status' , 1)->orderBy('c_time' , 'desc')->get(['id' , 'title' , 'image']);
         $data['case_list'] = $this->image_url($case_list , '2' , 'image');
 
         return $this->returnAjax($data , '获取成功' , 200);
@@ -109,9 +109,82 @@ class IndexController extends Controller
         $type = Input::get('type');
         $user_id = Input::get('user_id');
 
-        switch ($type){
-            case 1:
-                return 111;
+        if (empty($data_id)){
+            return $this->returnAjax('' , '操作的数据为空' , 100);
         }
+        if (empty($user_id)){
+            return $this->returnAjax('' , '操作人为空' , 100);
+        }
+        $data = [
+            'data_id'   =>  $data_id,
+            'type'      =>  $type,
+            'user_id'   =>  $user_id,
+            'c_time'    =>  time(),
+        ];
+
+        $info = DB::table('fabulous')->where(['data_id'=>$data_id , 'type'=>$type , 'user_id'=>$user_id])->first();
+        if (empty($info)){
+            $result = DB::table('fabulous')->insert($data);
+            if ($result){
+                switch ($type){
+                    case 1:
+                        DB::table('product')->where('id' , $data_id)->increment('fabulous_number');
+                        break;
+                    case 2:
+                        DB::table('laboratory')->where('id' , $data_id)->increment('fabulous_number');
+                        break;
+                    case 3:
+                        DB::table('case')->where('id' , $data_id)->increment('fabulous_number');
+                        break;
+                    case 4:
+                        DB::table('videos')->where('id' , $data_id)->increment('fabulous_number');
+                        break;
+                }
+                return $this->returnAjax('' , '点赞成功' , 200);
+            } else {
+                return $this->returnAjax('' , '点赞失败' , 100);
+            }
+        } else {
+            return $this->returnAjax('' , '不可以重复操作' , 100);
+        }
+    }
+
+    //评论接口
+    public function comment(){
+        $str = file_get_contents("php://input");
+        $data = json_decode($str , true);
+
+        if (empty($data['data_id'])){
+            return $this->returnAjax('' , '操作的数据为空' , 100);
+        }
+        if (empty($data['user_id'])){
+            return $this->returnAjax('' , '操作人为空' , 100);
+        }
+        $data['c_time'] = time();
+
+        $result = DB::table('comment')->insert($data);
+        if ($result){
+            return $this->returnAjax('' , '评论成功' , 200);
+        } else {
+            return $this->returnAjax('' , '评论失败' , 100);
+        }
+    }
+
+    public function test(){
+        $appid = "wxba5f6fdd47c6d644";
+        $AppSecret = "6b10639a82cefcb8c1d83a6e9e5380a0";
+        $redirect_uri = "http://api.jiaojumoxing.com/login";
+        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$appid."&redirect_uri=".$redirect_uri."&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
+
+        return "<a href='".$url."'>点击登录</a>";
+//        return $this->curlRequest($url);
+//        return $this->wx_login();
+    }
+
+    public function login(){
+        $code = Input::get('code');
+
+        $data = $this->wx_login($code);
+        return $this->returnAjax($data , '获取成功' , 200);
     }
 }

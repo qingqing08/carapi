@@ -33,13 +33,19 @@ class VideoController extends Controller
     //视频列表
     public function video_list(){
         $category_id = Input::get('category_id');
+//        $page = Input::get('page');
 
+        $page = 1;
+        $perage = 8;
+        $limitprame = ($page -1) * $perage;
         if (empty($category_id)){
-            $wx_list = DB::table('videos')->where('type' , 1)->get(['id' , 'video_name' , 'image' , 'watch_number']);
-            $cp_list = DB::table('videos')->where('type' , 2)->get(['id' , 'video_name' , 'image' , 'watch_number']);
+            $video_list = DB::table('videos')-> skip($limitprame)->take($perage)->get(['id' , 'video_name' , 'image' , 'watch_number']);
         } else {
-            $wx_list = DB::table('videos')->where(array('vc_id'=>$category_id , 'type'=>1))->get(['id' , 'video_name' , 'image' , 'watch_number']);
-            $cp_list = DB::table('videos')->where(array('vc_id'=>$category_id , 'type'=>2))->get(['id' , 'video_name' , 'image' , 'watch_number']);
+            $video_list = DB::table('videos')->where('vc_id' , $category_id)-> skip($limitprame)->take($perage)->get(['id' , 'video_name' , 'image' , 'watch_number']);
+        }
+
+        foreach ($video_list as $key=>$value){
+            $value->comment_number = DB::table('comment')->where(['data_id'=>$value->id , 'type'=>4])->count();
         }
 
         //主推视频列表
@@ -47,23 +53,22 @@ class VideoController extends Controller
         $main_video = $this->image_url($main_video , '3' , 'image');
         $list['main_video'] = $main_video;
 
-        //维修视频列表
-        $wx_list = $this->image_url($wx_list , '3' , 'image');
-        //产品讲解列表
-        $cp_list = $this->image_url($cp_list , '3' , 'image');
-        $list['wx_list'] = $wx_list;
-        $list['cp_list'] = $cp_list;
+        //视频列表
+        $list['video_list'] = $this->image_url($video_list , '3' , 'image');
+
         return $this->returnAjax($list , '获取成功' , 200);
     }
 
     //视频库详情
     public function video_info(){
         $video_id = Input::get('video_id');
+        $code = Input::get('code');
+//        $page = Input::get('page');
         if (empty($video_id)){
             return $this->returnAjax('' , '参数错误' , 100);
         }
 
-        $info = DB::table('videos')->where('id' , $video_id)->first(['id' , 'video_name' , 'video' , 'introduction' , 'watch_number' , 'share_number' , 'fabulous_number']);
+        $info = DB::table('videos')->where('id' , $video_id)->first(['id' , 'video_name' , 'video' , 'introduction' , 'keyword' , 'watch_number' , 'share_number' , 'fabulous_number']);
 
         if (empty($info)){
             return $this->returnAjax('' , '查无此数据' , 100);
@@ -71,17 +76,72 @@ class VideoController extends Controller
             DB::table('videos')->increment('watch_number');
             $info->video = $this->image_url($info->video , 1);
 
-//            $list = DB::table('videos')->whereNotIn('id' , $video_id)->get(['id' , 'video_name' , 'image']);
-//            print_r($list);die;
-//            if (!empty($list)){
-//                $list = $this->image_url($list , 3 , 'image');
-//                $info->relevant_video = $list;
-//            } else {
-//                $info->relevant_video = [];
+//            echo $info->keyword;die;
+            $ids[] = $video_id;
+//            $list = DB::table('videos')->where('video_name' , 'like' , '%'.$info->keyword.'%')->whereNotIn('id' , $ids)->get(['id' , 'video_name' , 'image']);
+
+            $page = 1;
+            $perage = 4;
+            $limitprame = ($page -1) * $perage;
+            $list = DB::table('videos')->where('video_name' , 'like' , '%'.$info->keyword.'%')->whereNotIn('id' , $ids)-> skip($limitprame)->take($perage)->get(['id' , 'video_name' , 'image']);
+
+            if (!empty($list)){
+                $list = $this->image_url($list , 3 , 'image');
+                $info->relevant_video = $list;
+            } else {
+                $info->relevant_video = [];
+            }
+//            $info->relevant_video = [];
+
+//            unset($info->keyword);
+            //评论列表
+            $comment_list = DB::table('comment')->where(['data_id'=>$video_id , 'type'=>4])->orderBy('c_time' , 'desc')->get(['id' , 'content' , 'c_time']);
+            $info->comment_number = count($comment_list);
+            $info->comment_list = $comment_list;
+            $info->tel = $this->tel();
+//            if (!empty($code)){
+//                $data = $this->wx_login($code);
+//                $info->user_id = $data->id;
 //            }
-            $info->relevant_video = [];
         }
 
         return $this->returnAjax($info , '获取成功' , 200);
+    }
+
+    //加载系列视频分页
+    public function related_videos(){
+        $video_id = Input::get('video_id');
+        $page = Input::get('page');
+
+        $info = DB::table('videos')->where('id' , $video_id)->first(['id' , 'video_name' , 'video' , 'introduction' , 'keyword' , 'watch_number' , 'share_number' , 'fabulous_number']);
+
+        $ids[] = $video_id;
+        $perage = 4;
+        $limitprame = ($page -1) * $perage;
+        $list = DB::table('videos')->where('video_name' , 'like' , '%'.$info->keyword.'%')->whereNotIn('id' , $ids)-> skip($limitprame)->take($perage)->get(['id' , 'video_name' , 'image']);
+
+        if (!empty($list)){
+            $list = $this->image_url($list , 3 , 'image');
+        } else {
+            $list = [];
+        }
+
+        return $this->returnAjax($list , '获取成功' , 200);
+    }
+
+    public function getlists($page , $perage , $table) {
+        // 获取到当前currentpage 和perpage 每页多少条
+        $limitprame = ($page -1) * $perage;
+        $info = DB::table($table)-> skip($limitprame)->take($perage)-> get();
+
+        $data = [
+            'status'=> 1,
+            'data' => [
+                'data' => $info,
+                'page' => $page
+            ]
+        ];
+
+        return $data;
     }
 }

@@ -68,7 +68,7 @@ class ProductController extends Controller
 
     //实训室分类
     public function training_category(){
-        $list = DB::table('laboratory_category')->get(['id' , 'category_name']);
+        $list = DB::table('laboratory_category')->orderBy('c_time' , 'desc')->get(['id' , 'category_name']);
 
         return $this->returnAjax($list , '获取成功' , 200);
     }
@@ -89,6 +89,7 @@ class ProductController extends Controller
     //实训室详情
     public function training_info(){
         $laboratory_id = Input::get('laboratory_id');
+        $code = Input::get('code');
 
         if (empty($laboratory_id)) {
             return $this->returnAjax('' , '参数错误' , 100);
@@ -106,9 +107,20 @@ class ProductController extends Controller
             $info->file = $this->image_url($info->file , 1);
         }
 
-        $list = DB::table('laboratory_video')->where('la_id' , $laboratory_id)->get(['id' , 'name']);
+        $list = DB::table('laboratory_video')->where('la_id' , $laboratory_id)->get(['id' , 'name' , 'video']);
 
+        $list = $this->image_url($list , 2 , 'video');
         $info->video_list = $list;
+
+        //评论列表
+        $comment_list = DB::table('comment')->where(['data_id'=>$laboratory_id , 'type'=>2])->orderBy('c_time' , 'desc')->get(['id' , 'content' , 'c_time']);
+        $info->comment_number = count($comment_list);
+        $info->comment_list = $comment_list;
+        $info->tel = $this->tel();
+//        if (!empty($code)){
+//            $data = $this->wx_login($code);
+//            $info->user_id = $data->id;
+//        }
 
         return $this->returnAjax($info , '获取成功' , 200);
     }

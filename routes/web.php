@@ -27,6 +27,11 @@ Route::get('productSearch' , 'IndexController@product_search');
 //实训室搜索
 Route::get('trainingSearch' , 'IndexController@training_search');
 
+//点赞接口
+Route::get('fabulous' , 'IndexController@fabulous');
+//评论接口
+Route::post('comment' , 'IndexController@comment');
+
 //反馈接口
 Route::post('feedback' , 'IndexController@feedback');
 //公司信息
@@ -74,8 +79,19 @@ Route::get('videoCategory' , 'VideoController@video_category');
 Route::get('videoList' , 'VideoController@video_list');
 //视频详情
 Route::get('videoInfo' , 'VideoController@video_info');
+//相关视频分页
+Route::get('relatedVideos' , 'VideoController@related_videos');
 
 //摄像头开始操作
 Route::get('start' , 'CameraController@start');
 //摄像头停止操作
 Route::get('stop' , 'CameraController@stop');
+
+//实景列表
+Route::get('liveList' , 'LiveController@live_list');
+
+
+//登录入口
+Route::get('login' , 'IndexController@login');
+//回调地址
+Route::get('test' , 'IndexController@test');
