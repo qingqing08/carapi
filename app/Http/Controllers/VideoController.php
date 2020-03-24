@@ -85,11 +85,17 @@ class VideoController extends Controller
             $limitprame = ($page -1) * $perage;
             $list = DB::table('videos')->where('video_name' , 'like' , '%'.$info->keyword.'%')->whereNotIn('id' , $ids)-> skip($limitprame)->take($perage)->get(['id' , 'video_name' , 'image']);
 
-            if (!empty($list)){
+            $count = count($list);
+            if ($count){
                 $list = $this->image_url($list , 3 , 'image');
                 $info->relevant_video = $list;
-            } else {
-                $info->relevant_video = [];
+            }
+
+//            print_r($list);
+            if ($count == 0){
+                $new_list = DB::table('videos')->whereNotIn('id' , $ids)->limit(4)->get(['id' , 'video_name' , 'image']);
+                $new_list = $this->image_url($new_list , 3 , 'image');
+                $info->relevant_video = $new_list;
             }
 //            $info->relevant_video = [];
 
@@ -121,12 +127,19 @@ class VideoController extends Controller
         $list = DB::table('videos')->where('video_name' , 'like' , '%'.$info->keyword.'%')->whereNotIn('id' , $ids)-> skip($limitprame)->take($perage)->get(['id' , 'video_name' , 'image']);
 
         if (!empty($list)){
-            $list = $this->image_url($list , 3 , 'image');
+            $data['list'] = $this->image_url($list , 3 , 'image');
         } else {
-            $list = [];
+            $data['list'] = [];
         }
 
-        return $this->returnAjax($list , '获取成功' , 200);
+        $peraget = 4;
+        $limitpramet = ($page) * $peraget;
+        $data_list = DB::table('videos')->where('video_name' , 'like' , '%'.$info->keyword.'%')->whereNotIn('id' , $ids)-> skip($limitpramet)->take($peraget)->get(['id' , 'video_name' , 'image']);
+
+        $count = count($data_list);
+        $data['count'] = $count;
+
+        return $this->returnAjax($data , '获取成功' , 200);
     }
 
     public function getlists($page , $perage , $table) {

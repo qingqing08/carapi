@@ -6,6 +6,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class Controller extends BaseController
@@ -34,23 +35,28 @@ class Controller extends BaseController
         $url = "http://cmf.jiaojumoxing.com";
         if ($data != ''){
             if ($type == 1){
-                $data = $url.$data;
+                if (substr($data,0,4) != 'http'){
+                    $data = $url.$data;
+                }
             }
             if ($type == 2){
                 foreach ($data as $key=>$val){
-                    $val->$param = $url.$val->$param;
+                    if (substr($val->$param,0,4) != 'http') {
+                        $val->$param = $url . $val->$param;
+                    }
                 }
             }
 
             if ($type == 3){
                 foreach ($data as $key=>$val){
                     if ($val->$param != '') {
-                        $val->$param = $url . $val->$param;
+                        if (substr($val->$param,0,4) != 'http') {
+                            $val->$param = $url . $val->$param;
+                        }
                     }
                 }
             }
         }
-
         return $data;
     }
 
@@ -65,13 +71,14 @@ class Controller extends BaseController
         $AppSecret = "6b10639a82cefcb8c1d83a6e9e5380a0";
         $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid."&secret=".$AppSecret."&code=".$code."&grant_type=authorization_code";
 
-        $access_token = $this->curlRequest($url);
+        $token = Cache::get('access_token');
+        if (empty($token)){
+            $access_token = $this->curlRequest($url);
 //        echo $access_token;
-        $arr = json_decode($access_token , true);
-
-
-//        print_r($arr);die;
-        $token = $arr['access_token'];
+            $arr = json_decode($access_token , true);
+            $token = $arr['access_token'];
+            Cache::put('access_token' , $token , 60);
+        }
 
         $user_url = "https://api.weixin.qq.com/sns/userinfo?access_token=".$token."&openid=OPENID&lang=zh_CN";
 

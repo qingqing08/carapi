@@ -44,10 +44,10 @@ class CasesController extends Controller
         $info->comment_number = count($comment_list);
         $info->comment_list = $comment_list;
         $info->tel = $this->tel();
-        if (!empty($code)){
-            $data = $this->wx_login($code);
-            $info->user_id = $data->id;
-        }
+//        if (!empty($code)){
+//            $data = $this->wx_login($code);
+//            $info->user_id = $data->id;
+//        }
 
         if (empty($info)){
             return $this->returnAjax('' , '查无此数据' , 100);
